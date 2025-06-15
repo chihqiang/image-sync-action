@@ -1,0 +1,29 @@
+name: 'Batch Image Sync'
+description: 'Synchronize multiple Docker images to a target container registry (with tagging support)'
+author: 'zhiqiang <zhiqiang2033@gmail.com>'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+
+inputs:
+  images:
+    description: 'Space-separated list of images, e.g. "nginx:1.25 redis alpine:3.19"'
+    required: true
+  registry:
+    description: 'Target container registry, default is docker.io'
+    required: false
+    default: 'docker.io'
+  namespace:
+    description: 'Target namespace (e.g., Docker Hub username or organization)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Image Sync script
+      shell: bash
+      run: bash "${{ github.action_path }}/entry.sh"
+      env:
+        IMAGES: ${{ inputs.images }}
+        CONTAINER_REGISTRY: ${{ inputs.registry }}
+        CONTAINER_NAMESPACE: ${{ inputs.namespace }}
